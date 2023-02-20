@@ -1,12 +1,13 @@
 package com.example.carfaxassignmenmt.data.model.local
 
-import androidx.room.ColumnInfo
-import androidx.room.PrimaryKey
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
  * Created by Sagar Pujari on 18/02/23.
  */
-data class CarListItem(val vin: String,
+@Parcelize
+data class CarListItem (val vin: String,
                        val transmission: String,
                        val mileage: Int,
                        val image: String,
@@ -21,4 +22,5 @@ data class CarListItem(val vin: String,
                        val year: Int,
                        val make: String,
                        val model: String,
-                       val trim: String)
+                       val trim: String,
+                        val fuel: String) : Parcelable

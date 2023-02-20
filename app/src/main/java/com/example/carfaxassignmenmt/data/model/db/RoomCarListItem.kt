@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.carfaxassignmenmt.common.Constants
+import com.google.gson.annotations.SerializedName
 
 /**
  * @author Sagar Pujari
@@ -63,5 +64,8 @@ data class RoomCarListItem(
 
     @ColumnInfo(name = "trim")
     val trim: String,
+
+    @ColumnInfo(name = "fuel")
+    val fuel: String,
 )
 

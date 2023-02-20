@@ -30,6 +30,12 @@ class CarListRepository @Inject constructor(private val carListingApiService: Ca
             .flowOn(dispatcher)
     }
 
+    override fun getCarItem(id: String): Flow<CarListItem> {
+        return flow{ emit(localSource.get(id)) }
+            .map{ carListItemMapper.localMapper.map(it) }
+            .flowOn(dispatcher)
+    }
+
     private suspend fun saveCarListings(item: Response): List<CarListItem> {
         localSource.deleteAll()
         localSource.insertOrUpdate(carListItemMapper.dbMapper.map(item.listings))

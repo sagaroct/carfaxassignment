@@ -49,4 +49,7 @@ data class ListingsItem(
 	@field:SerializedName("trim")
 	val trim: String,
 
+	@field:SerializedName("fuel")
+	val fuel: String
+
 	)

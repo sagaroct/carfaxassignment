@@ -22,7 +22,7 @@ object CarListItemMapper {
                 CarListItem(
                     vin, transmission, mileage, image, interiorColor, drivetype,
                     engine, bodytype, exteriorColor, currentPrice, phone,
-                    address, year, make, model, trim)
+                    address, year, make, model, trim, fuel)
             }
         }
 
@@ -34,7 +34,7 @@ object CarListItemMapper {
                 RoomCarListItem(
                     vin, transmission, mileage, images.firstPhoto.large, interiorColor, drivetype,
                     engine, bodytype, exteriorColor, currentPrice, dealer.phone,
-                    dealer.address, year, make, model, trim)
+                    dealer.address, year, make, model, trim, fuel)
             }
         }
     }
