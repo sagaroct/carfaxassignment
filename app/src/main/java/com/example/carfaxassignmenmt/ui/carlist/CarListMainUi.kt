@@ -27,17 +27,16 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.example.carfaxassignmenmt.R
 import com.example.carfaxassignmenmt.common.Constants
+import com.example.carfaxassignmenmt.common.UnitConverter.priceWithComma
+import com.example.carfaxassignmenmt.common.UnitConverter.numberWithK
 import com.example.carfaxassignmenmt.data.model.local.CarListItem
 import com.example.carfaxassignmenmt.data.model.local.ApiResult
-import com.example.carfaxassignmenmt.ui.cardetail.CarDetailUi
+import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
-import com.example.carfaxassignmenmt.ui.theme.Blue_Call
+import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
 
 /**
  * Created by Sagar Pujari on 02/10/22.
@@ -47,8 +46,6 @@ class CarListMainUi {
     companion object {
         private const val TAG = "CarListMainUi"
     }
-
-//    private val callPhone = mutableStateOf(false)
 
     @Composable
     fun TopAppBarComponent() {
@@ -101,7 +98,7 @@ class CarListMainUi {
                         )
                         Row(modifier = Modifier.padding(top = 8.dp)) {
                             Text(
-                                text = "$ ${carListItem.currentPrice}",
+                                text = "$ ${priceWithComma(carListItem.currentPrice)}",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 16.sp
                             )
@@ -115,7 +112,7 @@ class CarListMainUi {
                             )
 
                             Text(
-                                text = "${carListItem.mileage} mi",
+                                text = "${numberWithK(carListItem.mileage)} mi",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 16.sp
                             )
@@ -143,7 +140,7 @@ class CarListMainUi {
                                 },
                                 textAlign = TextAlign.Center,
                                 fontSize = 16.sp,
-                                color = Blue_Call,
+                                color = Blue_Primary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -178,7 +175,7 @@ class CarListMainUi {
             when (apiResult) {
                 is ApiResult.Loading -> {
                     Log.d(TAG, "Loading")
-                    //TODO: Show a loading progress here.
+                    CommonComposeUi.SimpleCircularProgressIndicator()
                 }
                 is ApiResult.Error -> {
                     Log.d(TAG, "Error")
