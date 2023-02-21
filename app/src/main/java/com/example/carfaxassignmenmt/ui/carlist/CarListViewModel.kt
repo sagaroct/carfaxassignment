@@ -2,10 +2,9 @@ package com.example.carfaxassignmenmt.ui.carlist
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.example.carfaxassignmenmt.data.model.local.ApiResult
 import com.example.carfaxassignmenmt.data.model.local.CarListItem
-import com.example.carfaxassignmenmt.data.model.local.CarListResponse
 import com.example.carfaxassignmenmt.data.network.ICarListRepository
-import com.example.carfaxassignmenmt.data.repository.CarListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -19,12 +18,13 @@ class CarListViewModel @Inject constructor(private val carListRepository: ICarLi
         private const val TAG = "CarListViewModel"
     }
 
-    private val carListResponseMutableStateFlow: MutableStateFlow<CarListResponse> = MutableStateFlow(CarListResponse.Loading)
-    /**
-     * Expose the StateFlow CarListResponse so the UI can observe it.
-     */
-    val carListResponseStateFlow: StateFlow<CarListResponse>
-        get() = carListResponseMutableStateFlow
+    private val carListMutableApiResultFlow: MutableStateFlow<ApiResult<List<CarListItem>>> = MutableStateFlow(ApiResult.Loading)
+    val carListApiResultFlow: StateFlow<ApiResult<List<CarListItem>>>
+        get() = carListMutableApiResultFlow
+
+    private val carItemMutableApiResultFlow: MutableStateFlow<ApiResult<CarListItem>> = MutableStateFlow(ApiResult.Loading)
+    val carItemApiResultFlow: StateFlow<ApiResult<CarListItem>>
+        get() = carItemMutableApiResultFlow
 
      fun getCarListFromRepository() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -32,10 +32,23 @@ class CarListViewModel @Inject constructor(private val carListRepository: ICarLi
                 .retryWhen { _, attempt -> attempt < 3 }
                 .catch { error ->
                     Log.e(TAG, "getCarListFromRepository: ${error.message}")
-                    carListResponseMutableStateFlow.value = CarListResponse.Error
+                    carListMutableApiResultFlow.value = ApiResult.Error
                     emit(listOf())
                 }.collect {
-                    carListResponseMutableStateFlow.value = CarListResponse.Success(it)
+                    carListMutableApiResultFlow.value = ApiResult.Success(it)
+                }
+        }
+    }
+
+    fun getCarItemFromRepository(id: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            carListRepository.getCarItem(id)
+                .retryWhen { _, attempt -> attempt < 3 }
+                .catch { error ->
+                    Log.e(TAG, "getCarListFromRepository: ${error.message}")
+                    carItemMutableApiResultFlow.value = ApiResult.Error
+                }.collect {
+                    carItemMutableApiResultFlow.value = ApiResult.Success(it)
                 }
         }
     }

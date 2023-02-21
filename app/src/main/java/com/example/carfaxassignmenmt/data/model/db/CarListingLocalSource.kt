@@ -21,6 +21,9 @@ abstract class CarListingLocalSource : BaseDao<RoomCarListItem>() {
     @Query("SELECT * FROM ${Constants.Table.ROOM_CAR_LIST_ITEM}")
     abstract suspend fun get(): List<RoomCarListItem>
 
+    @Query("SELECT * FROM ${Constants.Table.ROOM_CAR_LIST_ITEM} WHERE vin = :id")
+    abstract suspend fun get(id: String): RoomCarListItem
+
     @Query("DELETE FROM ${Constants.Table.ROOM_CAR_LIST_ITEM}")
     abstract suspend fun deleteAll()
 

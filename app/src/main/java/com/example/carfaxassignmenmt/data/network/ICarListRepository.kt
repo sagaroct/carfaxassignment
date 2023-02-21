@@ -11,4 +11,6 @@ interface ICarListRepository {
 
     fun getCarList(): Flow<List<CarListItem>>
 
+    fun getCarItem(id: String): Flow<CarListItem>
+
 }

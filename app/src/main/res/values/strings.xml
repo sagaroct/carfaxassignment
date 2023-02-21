@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">CarFax Assignmenmt</string>
+    <string name="app_name">CarFax Assignment</string>
+    <string name="call_dialer">Call Dialer</string>
 </resources>
