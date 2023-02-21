@@ -1,7 +1,6 @@
 package com.example.carfaxassignmenmt.ui.cardetail
 
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
@@ -24,16 +23,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.carfaxassignmenmt.R
+import com.example.carfaxassignmenmt.common.UnitConverter
 import com.example.carfaxassignmenmt.data.model.local.ApiResult
 import com.example.carfaxassignmenmt.data.model.local.CarListItem
 import com.example.carfaxassignmenmt.ui.carlist.CarListViewModel
+import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
-import com.example.carfaxassignmenmt.ui.theme.Blue_Call
+import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
 
 /**
  * Created by Sagar Pujari on 02/10/22.
@@ -95,7 +95,7 @@ class CarDetailUi {
                         )
                         Row(modifier = Modifier.padding(top = 8.dp)) {
                             Text(
-                                text = "$ ${carListItem.currentPrice}",
+                                text = "$ ${UnitConverter.priceWithComma(carListItem.currentPrice)}",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
@@ -110,7 +110,7 @@ class CarDetailUi {
                             )
 
                             Text(
-                                text = "${carListItem.mileage} mi",
+                                text = "${UnitConverter.numberWithK(carListItem.mileage)} mi",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
@@ -159,7 +159,6 @@ class CarDetailUi {
                             .align(Alignment.CenterHorizontally)
                             .weight(1f, false)
                     ) {
-                        val context = LocalContext.current
                         Button(
                             onClick = {
                                 callPhone.value = true
@@ -167,7 +166,7 @@ class CarDetailUi {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(50.dp),
-                            colors = ButtonDefaults.buttonColors(backgroundColor = Blue_Call),
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Blue_Primary),
                             shape  = RectangleShape,
                         )
                         {
@@ -203,7 +202,7 @@ class CarDetailUi {
             val apiResult: ApiResult<CarListItem> by carListViewModel.carItemApiResultFlow.collectAsStateWithLifecycle()
             when (apiResult) {
                 is ApiResult.Loading -> {
-                    //TODO: Show a loading progress here.
+                    CommonComposeUi.SimpleCircularProgressIndicator()
                 }
                 is ApiResult.Error -> {
                     Toast.makeText(LocalContext.current, "Error Fetching Data", Toast.LENGTH_LONG).show()

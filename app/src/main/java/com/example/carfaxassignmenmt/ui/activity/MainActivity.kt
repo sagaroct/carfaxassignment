@@ -1,4 +1,4 @@
-package com.example.carfaxassignmenmt.ui.carlist
+package com.example.carfaxassignmenmt.ui.activity
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
