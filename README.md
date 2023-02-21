@@ -6,3 +6,4 @@ This is an assignment project for Carfax showcasing use of foll android componen
 4. Jetpack Compose and Navigation.
 5. Retrofit for Network Api call
 6. Hilt for Dependency Injection.
+7. Flow for Reactive Pattern.
