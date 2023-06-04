@@ -58,11 +58,10 @@ class CarListMainUi {
 
     @SuppressLint("UnrememberedMutableState")
     @Composable
-    fun CarListRowCard(carListItem: CarListItem, onClick: () -> Unit){
-        var callPhone by remember {mutableStateOf(false)}
-        if(callPhone){
+    fun CarListRowCard(carListItem: CarListItem, callPhone: MutableState<Boolean> =  remember {mutableStateOf(false)}, onClick: () -> Unit){
+        if(callPhone.value){
             PhoneDialer().CallPhoneNumber(carListItem.phone){ dialogOpen ->
-                callPhone = dialogOpen
+                callPhone.value = dialogOpen
             }
         }
             Surface(
@@ -136,7 +135,7 @@ class CarListMainUi {
                             Text(
                                 text = "CALL DEALER",
                                 Modifier.wrapContentWidth().clickable {
-                                    callPhone = true
+                                    callPhone.value = true
                                 },
                                 textAlign = TextAlign.Center,
                                 fontSize = 16.sp,

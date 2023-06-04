@@ -155,7 +155,7 @@ class CarDetailUi {
                     )
                     Box(
                         Modifier
-                            .padding(top = 40.dp)
+                            .padding(top = 300.dp)
                             .align(Alignment.CenterHorizontally)
                             .weight(1f, false)
                     ) {
@@ -196,7 +196,8 @@ class CarDetailUi {
     }
 
     @Composable
-    fun MainContent(carListViewModel: CarListViewModel = hiltViewModel(), carListItemId: String){
+    fun MainContent(carListItemId: String){
+        val carListViewModel: CarListViewModel = hiltViewModel()
         Column {
             TopAppBarComponent()
             val apiResult: ApiResult<CarListItem> by carListViewModel.carItemApiResultFlow.collectAsStateWithLifecycle()

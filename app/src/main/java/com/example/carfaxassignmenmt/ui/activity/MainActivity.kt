@@ -20,7 +20,6 @@ class MainActivity : ComponentActivity() {
         private const val TAG = "MainActivity"
     }
 
-//    private val carListViewModel: CarListViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +30,9 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background
                 ) {
                     Navigation()
-//                    CarListMainUi().MainContent(navController)
                 }
             }
         }
-//        carListViewModel.getCarListFromRepository()
     }
 
 }
