@@ -28,12 +28,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import com.example.carfaxassignmenmt.R
 import com.example.carfaxassignmenmt.common.UnitConverter
-import com.example.carfaxassignmenmt.data.model.local.ApiResult
-import com.example.carfaxassignmenmt.data.model.local.CarListItem
 import com.example.carfaxassignmenmt.ui.carlist.CarListViewModel
 import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
 import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
+import com.example.data.model.local.ApiResult
+import com.example.domain.models.CarListItem
 
 /**
  * Created by Sagar Pujari on 02/10/22.
