@@ -70,6 +70,7 @@ class CarDetailUi {
                 modifier = Modifier
                     .animateContentSize()
                     .fillMaxHeight()
+                    .verticalScroll(rememberScrollState())
 
             ) {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -122,7 +123,7 @@ class CarDetailUi {
                         color = Color.LightGray, thickness = 1.dp
                     )
 
-                    Column(Modifier.padding(start = 30.dp, top = 10.dp)) {
+                    Column(Modifier.padding(start = 30.dp, top = 10.dp).weight(3f, false)) {
                         Text(
                             text = "Vehicle Info",
                             Modifier
@@ -153,7 +154,7 @@ class CarDetailUi {
                                 )
                             ), thickness = 4.dp
                     )
-                    Box(
+                    Column(
                         Modifier
                             .padding(top = 300.dp)
                             .align(Alignment.CenterHorizontally)
