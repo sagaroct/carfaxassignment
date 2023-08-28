@@ -15,7 +15,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
 
     @Binds
-    abstract fun bindMovieRepository(
+    abstract fun bindCarListRepository(
         carListRepository: CarListRepository
     ): ICarListRepository
 

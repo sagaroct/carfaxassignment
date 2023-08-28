@@ -31,8 +31,8 @@ object DataModule {
   fun provideDispatcher() = Dispatchers.IO
 
   @Provides
-  fun providesMovieRepository(movieApiService: CarListingApiService, movieDatabase: CarListingDatabase,
-                              carListItemMapper: CarListItemMapper, dispatcher: CoroutineDispatcher
-  ) = CarListRepository(movieApiService, movieDatabase, carListItemMapper, dispatcher)
+  fun providesCarListRepository(carListingApiService: CarListingApiService, carListingDatabase: CarListingDatabase,
+                                carListItemMapper: CarListItemMapper, dispatcher: CoroutineDispatcher
+  ) = CarListRepository(carListingApiService, carListingDatabase, carListItemMapper, dispatcher)
 
 }
