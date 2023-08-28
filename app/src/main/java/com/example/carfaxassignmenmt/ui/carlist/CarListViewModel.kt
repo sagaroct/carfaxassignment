@@ -2,9 +2,9 @@ package com.example.carfaxassignmenmt.ui.carlist
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.example.carfaxassignmenmt.data.model.local.ApiResult
-import com.example.carfaxassignmenmt.data.model.local.CarListItem
-import com.example.carfaxassignmenmt.data.network.ICarListRepository
+import com.example.data.model.local.ApiResult
+import com.example.domain.models.CarListItem
+import com.example.domain.repositories.ICarListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
