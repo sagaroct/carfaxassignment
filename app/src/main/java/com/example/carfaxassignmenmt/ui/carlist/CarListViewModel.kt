@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.data.model.local.ApiResult
 import com.example.domain.models.CarListItem
-import com.example.domain.repositories.ICarListRepository
+import com.example.domain.usecases.GetCarDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CarListViewModel @Inject constructor(private val carListRepository: ICarListRepository) : ViewModel()  {
+class CarListViewModel @Inject constructor(private val getCarDataUseCase: GetCarDataUseCase) : ViewModel()  {
 
     companion object {
         private const val TAG = "CarListViewModel"
@@ -28,7 +28,7 @@ class CarListViewModel @Inject constructor(private val carListRepository: ICarLi
 
      fun getCarListFromRepository() {
         viewModelScope.launch(Dispatchers.IO) {
-            carListRepository.getCarList()
+            getCarDataUseCase.getCarList()
                 .retryWhen { _, attempt -> attempt < 3 }
                 .catch { error ->
                     Log.e(TAG, "getCarListFromRepository: ${error.message}")
@@ -42,7 +42,7 @@ class CarListViewModel @Inject constructor(private val carListRepository: ICarLi
 
     fun getCarItemFromRepository(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            carListRepository.getCarItem(id)
+            getCarDataUseCase.getCarItem(id)
                 .retryWhen { _, attempt -> attempt < 3 }
                 .catch { error ->
                     Log.e(TAG, "getCarListFromRepository: ${error.message}")

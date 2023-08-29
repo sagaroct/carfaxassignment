@@ -70,7 +70,7 @@ class CarDetailUi {
                 modifier = Modifier
                     .animateContentSize()
                     .fillMaxHeight()
-                    .verticalScroll(rememberScrollState())
+//                    .verticalScroll(rememberScrollState())
 
             ) {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState()),
