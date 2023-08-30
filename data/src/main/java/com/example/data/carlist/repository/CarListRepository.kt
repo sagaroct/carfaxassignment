@@ -1,9 +1,9 @@
-package com.example.data.repository
+package com.example.data.carlist.repository
 
 import com.example.data.database.CarListingDatabase
 import com.example.data.model.local.CarListItemMapper
 import com.example.data.model.remote.Response
-import com.example.data.network.CarListingApiService
+import com.example.data.carlist.network.CarListingApiService
 import com.example.domain.models.CarListItem
 import com.example.domain.repositories.ICarListRepository
 import kotlinx.coroutines.CoroutineDispatcher

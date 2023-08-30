@@ -1,18 +1,24 @@
 package com.example.carfaxassignmenmt.ui.carlist
 
 import android.util.Log
-import androidx.lifecycle.*
-import com.example.data.model.local.ApiResult
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.data.model.ApiResult
 import com.example.domain.models.CarListItem
-import com.example.domain.usecases.GetCarDataUseCase
+import com.example.domain.usecases.GetCarItemUseCase
+import com.example.domain.usecases.GetCarListItemUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CarListViewModel @Inject constructor(private val getCarDataUseCase: GetCarDataUseCase) : ViewModel()  {
+class CarListViewModel @Inject constructor(private val getCarItemUseCase: GetCarItemUseCase,
+                                           private val getCarListItemUseCase: GetCarListItemUseCase) : ViewModel()  {
 
     companion object {
         private const val TAG = "CarListViewModel"
@@ -28,8 +34,7 @@ class CarListViewModel @Inject constructor(private val getCarDataUseCase: GetCar
 
      fun getCarListFromRepository() {
         viewModelScope.launch(Dispatchers.IO) {
-            getCarDataUseCase.getCarList()
-                .retryWhen { _, attempt -> attempt < 3 }
+            getCarListItemUseCase().retryWhen { _, attempt -> attempt < 3 }
                 .catch { error ->
                     Log.e(TAG, "getCarListFromRepository: ${error.message}")
                     carListMutableApiResultFlow.value = ApiResult.Error
@@ -42,8 +47,7 @@ class CarListViewModel @Inject constructor(private val getCarDataUseCase: GetCar
 
     fun getCarItemFromRepository(id: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            getCarDataUseCase.getCarItem(id)
-                .retryWhen { _, attempt -> attempt < 3 }
+            getCarItemUseCase(id).retryWhen { _, attempt -> attempt < 3 }
                 .catch { error ->
                     Log.e(TAG, "getCarListFromRepository: ${error.message}")
                     carItemMutableApiResultFlow.value = ApiResult.Error

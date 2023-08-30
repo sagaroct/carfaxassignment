@@ -1,6 +1,6 @@
 package com.example.data.di
 
-import com.example.data.network.CarListingApiService
+import com.example.data.carlist.network.CarListingApiService
 import com.example.data.common.Constants
 import dagger.Module
 import dagger.Provides

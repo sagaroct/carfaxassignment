@@ -1,5 +1,5 @@
 
-package com.example.data.network
+package com.example.data.carlist.network
 
 import com.example.data.model.remote.Response
 import retrofit2.http.GET
