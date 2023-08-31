@@ -10,17 +10,21 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityComponent
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object CarListRepositoryModule {
 
   @Provides
+  @ViewModelScoped
   fun provideCarListItemMapper() = CarListItemMapper
 
   @Provides
+  @ViewModelScoped
   fun provideCarListRepository(carListingApiService: CarListingApiService, carListingDatabase: CarListingDatabase,
                                carListItemMapper: CarListItemMapper, dispatcher: CoroutineDispatcher
   ) = CarListRepository(carListingApiService, carListingDatabase, carListItemMapper, dispatcher)
