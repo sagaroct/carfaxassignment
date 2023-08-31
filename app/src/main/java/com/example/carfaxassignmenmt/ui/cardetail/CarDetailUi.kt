@@ -32,7 +32,7 @@ import com.example.carfaxassignmenmt.ui.carlist.CarListViewModel
 import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
 import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
-import com.example.data.model.local.ApiResult
+import com.example.data.model.ApiResult
 import com.example.domain.models.CarListItem
 
 /**
@@ -70,7 +70,7 @@ class CarDetailUi {
                 modifier = Modifier
                     .animateContentSize()
                     .fillMaxHeight()
-                    .verticalScroll(rememberScrollState())
+//                    .verticalScroll(rememberScrollState())
 
             ) {
                 Column(modifier = Modifier.verticalScroll(rememberScrollState()),

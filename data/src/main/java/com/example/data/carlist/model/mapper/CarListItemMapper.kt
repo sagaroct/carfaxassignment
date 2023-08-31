@@ -3,7 +3,7 @@ package com.example.data.model.local
 import com.example.data.mappers.BasicMapper
 import com.example.data.mappers.Mapper
 import com.example.data.model.db.RoomCarListItem
-import com.example.data.model.remote.ListingsItem
+import com.example.data.model.remote.RemoteCarListItem
 import com.example.domain.models.CarListItem
 
 /**
@@ -15,7 +15,7 @@ object CarListItemMapper {
 
     //    val networkMapper: Mapper<ListingsItem, CarListItem> = NetworkMapper()
     val localMapper: Mapper<RoomCarListItem, CarListItem> = LocalMapper()
-    val dbMapper: Mapper<ListingsItem, RoomCarListItem> = DbMapper()
+    val dbMapper: Mapper<RemoteCarListItem, RoomCarListItem> = DbMapper()
 
     internal class LocalMapper : BasicMapper<RoomCarListItem, CarListItem>() {
         override fun map(item: RoomCarListItem): CarListItem {
@@ -29,8 +29,8 @@ object CarListItemMapper {
 
     }
 
-    internal class DbMapper : BasicMapper<ListingsItem, RoomCarListItem>() {
-        override fun map(item: ListingsItem): RoomCarListItem {
+    internal class DbMapper : BasicMapper<RemoteCarListItem, RoomCarListItem>() {
+        override fun map(item: RemoteCarListItem): RoomCarListItem {
             return with(item) {
                 RoomCarListItem(
                     vin, transmission, mileage, images.firstPhoto.large, interiorColor, drivetype,
