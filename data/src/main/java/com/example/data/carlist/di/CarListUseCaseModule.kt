@@ -6,20 +6,22 @@ import com.example.domain.usecases.GetCarListItemUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
+import dagger.hilt.android.scopes.ViewModelScoped
 import dagger.hilt.components.SingletonComponent
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 object CarListUseCaseModule {
 
   @Provides
-//  @ViewModelScoped
+  @ViewModelScoped
   fun provideGetCarItemUseCase(carListRepository: CarListRepository): GetCarItemUseCase {
     return GetCarItemUseCase(carListRepository)
   }
 
   @Provides
-//  @ViewModelScoped
+  @ViewModelScoped
   fun provideGetCarListItemUseCase(carListRepository: CarListRepository): GetCarListItemUseCase {
     return GetCarListItemUseCase(carListRepository)
   }

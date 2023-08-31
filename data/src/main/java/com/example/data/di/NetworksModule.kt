@@ -35,7 +35,7 @@ object NetworksModule {
 
   @Singleton
   @Provides
-  fun providesMovieApiService(retrofit: Retrofit): CarListingApiService {
+  fun providesCarListingApiService(retrofit: Retrofit): CarListingApiService {
     return retrofit.create(CarListingApiService::class.java)
   }
 
