@@ -1,6 +1,7 @@
 package com.example.domain.repositories
 
-import com.example.domain.models.CarListItem
+import com.example.domain.models.ApiResult
+import com.example.domain.models.CarItem
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -8,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
  */
 interface ICarListRepository {
 
-    fun getCarList(): Flow<List<CarListItem>>
+    fun getCarList(): Flow<ApiResult<List<CarItem>>>
 
-    fun getCarItem(id: String): Flow<CarListItem>
+    fun getCarItem(id: String): Flow<ApiResult<CarItem>>
 
 }

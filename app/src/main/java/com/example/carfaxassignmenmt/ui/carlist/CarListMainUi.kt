@@ -35,8 +35,8 @@ import com.example.carfaxassignmenmt.common.UnitConverter.numberWithK
 import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
 import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
-import com.example.data.model.ApiResult
-import com.example.domain.models.CarListItem
+import com.example.domain.models.ApiResult
+import com.example.domain.models.CarItem
 
 /**
  * Created by Sagar Pujari on 02/10/22.
@@ -58,9 +58,9 @@ class CarListMainUi {
 
     @SuppressLint("UnrememberedMutableState")
     @Composable
-    fun CarListRowCard(carListItem: CarListItem, callPhone: MutableState<Boolean> =  remember {mutableStateOf(false)}, onClick: () -> Unit){
+    fun CarListRowCard(carItem: CarItem, callPhone: MutableState<Boolean> =  remember {mutableStateOf(false)}, onClick: () -> Unit){
         if(callPhone.value){
-            PhoneDialer().CallPhoneNumber(carListItem.phone){ dialogOpen ->
+            PhoneDialer().CallPhoneNumber(carItem.phone){ dialogOpen ->
                 callPhone.value = dialogOpen
             }
         }
@@ -79,7 +79,7 @@ class CarListMainUi {
             ) {
                 Column {
                     Image(
-                        painter =  rememberAsyncImagePainter(carListItem.image),
+                        painter =  rememberAsyncImagePainter(carItem.image),
                         "Car pic",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -88,7 +88,7 @@ class CarListMainUi {
                     )
                     Column(Modifier.padding(8.dp)) {
                         val carPrimaryDetail =
-                            "${carListItem.year} ${carListItem.make} ${carListItem.model} ${carListItem.trim}"
+                            "${carItem.year} ${carItem.make} ${carItem.model} ${carItem.trim}"
                         Text(
                             text = carPrimaryDetail,
                             Modifier.fillMaxWidth(),
@@ -97,7 +97,7 @@ class CarListMainUi {
                         )
                         Row(modifier = Modifier.padding(top = 8.dp)) {
                             Text(
-                                text = "$ ${priceWithComma(carListItem.currentPrice)}",
+                                text = "$ ${priceWithComma(carItem.currentPrice)}",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 16.sp
                             )
@@ -111,13 +111,13 @@ class CarListMainUi {
                             )
 
                             Text(
-                                text = "${numberWithK(carListItem.mileage)} mi",
+                                text = "${numberWithK(carItem.mileage)} mi",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 16.sp
                             )
                         }
                         Text(
-                            text = carListItem.address,
+                            text = carItem.address,
                             Modifier.wrapContentWidth(),
                             fontSize = 16.sp
                         )
@@ -149,11 +149,11 @@ class CarListMainUi {
     }
 
     @Composable
-    fun CarListView(navController: NavHostController, carListItems: List<CarListItem>){
+    fun CarListView(navController: NavHostController, carItems: List<CarItem>){
         Column {
             Modifier.background(color = Color.LightGray)
             LazyColumn {
-                items(carListItems) { carListItem ->
+                items(carItems) { carListItem ->
                     CarListRowCard(carListItem){
                         navController.navigate("${Constants.Screen.CarDetailScreen.route}/${carListItem.vin}")
 
@@ -170,15 +170,16 @@ class CarListMainUi {
     ){
         Column {
             TopAppBarComponent()
-            val apiResult: ApiResult<List<CarListItem>> by carListViewModel.carListApiResultFlow.collectAsStateWithLifecycle()
+            val apiResult: ApiResult<List<CarItem>> by carListViewModel.carListApiResultFlow.collectAsStateWithLifecycle()
             when (apiResult) {
                 is ApiResult.Loading -> {
                     Log.d(TAG, "Loading")
                     CommonComposeUi.SimpleCircularProgressIndicator()
                 }
                 is ApiResult.Error -> {
-                    Log.d(TAG, "Error")
-                    Toast.makeText(LocalContext.current, "Error Fetching Data", Toast.LENGTH_LONG).show()
+                    val errorMsg = (apiResult as ApiResult.Error).error.message ?: "Error Fetching Data"
+                    Log.d(TAG, errorMsg)
+                    Toast.makeText(LocalContext.current, errorMsg, Toast.LENGTH_LONG).show()
                 }
                 is ApiResult.Success -> {
                     Log.d(TAG, (apiResult as ApiResult.Success).data.toString())
@@ -193,7 +194,7 @@ class CarListMainUi {
     @Preview
     @Composable
     fun PreviewCarList() {
-        val carListItem = CarListItem(
+        val carItem = CarItem(
             "19UDE2F3XGA025865",
             "Automatic",
             22,
@@ -212,7 +213,7 @@ class CarListMainUi {
             "Unspecified",
             "Petrol"
         )
-        val carListItems = arrayListOf(carListItem, carListItem, carListItem)
+        val carListItems = arrayListOf(carItem, carItem, carItem)
         LazyColumn {
             items(carListItems) { carListItem ->
                 CarListRowCard(carListItem){

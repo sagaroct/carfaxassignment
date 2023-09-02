@@ -1,7 +1,7 @@
 
 package com.example.data.carlist.network
 
-import com.example.data.model.remote.Response
+import com.example.data.carlist.model.remote.Response
 import retrofit2.http.GET
 
 /**
