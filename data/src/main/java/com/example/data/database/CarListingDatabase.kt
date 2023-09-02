@@ -2,8 +2,8 @@ package com.example.data.database
 
 import android.content.Context
 import androidx.room.*
-import com.example.data.model.db.CarListingLocalSource
-import com.example.data.model.db.RoomCarListItem
+import com.example.data.carlist.model.db.CarListingLocalSource
+import com.example.data.carlist.model.db.RoomCarListItem
 
 /**
  * @author Sagar Pujari

@@ -32,8 +32,8 @@ import com.example.carfaxassignmenmt.ui.carlist.CarListViewModel
 import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
 import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
-import com.example.data.model.ApiResult
-import com.example.domain.models.CarListItem
+import com.example.domain.models.ApiResult
+import com.example.domain.models.CarItem
 
 /**
  * Created by Sagar Pujari on 02/10/22.
@@ -57,9 +57,9 @@ class CarDetailUi {
 
     @SuppressLint("UnrememberedMutableState")
     @Composable
-    fun CarDetail(carListItem: CarListItem){
+    fun CarDetail(carItem: CarItem){
             if(callPhone.value){
-            PhoneDialer().CallPhoneNumber(carListItem.phone){ dialogOpen ->
+            PhoneDialer().CallPhoneNumber(carItem.phone){ dialogOpen ->
                 callPhone.value = dialogOpen
             }
         }
@@ -77,7 +77,7 @@ class CarDetailUi {
                     verticalArrangement = Arrangement.SpaceBetween) {
                     Image(
                         painter =  rememberAsyncImagePainter(
-                            carListItem.image),
+                            carItem.image),
                         "Car pic",
                         modifier = Modifier
                             .fillMaxWidth()
@@ -86,7 +86,7 @@ class CarDetailUi {
                     )
                     Column(Modifier.padding(start = 30.dp, top = 10.dp)) {
                         val carPrimaryDetail =
-                            "${carListItem.year} ${carListItem.make} ${carListItem.model} ${carListItem.trim}"
+                            "${carItem.year} ${carItem.make} ${carItem.model} ${carItem.trim}"
                         Text(
                             text = carPrimaryDetail,
                             Modifier.fillMaxWidth(),
@@ -96,7 +96,7 @@ class CarDetailUi {
                         )
                         Row(modifier = Modifier.padding(top = 8.dp)) {
                             Text(
-                                text = "$ ${UnitConverter.priceWithComma(carListItem.currentPrice)}",
+                                text = "$ ${UnitConverter.priceWithComma(carItem.currentPrice)}",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
@@ -111,7 +111,7 @@ class CarDetailUi {
                             )
 
                             Text(
-                                text = "${UnitConverter.numberWithK(carListItem.mileage)} mi",
+                                text = "${UnitConverter.numberWithK(carItem.mileage)} mi",
                                 Modifier.wrapContentWidth(),
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold
@@ -133,14 +133,14 @@ class CarDetailUi {
                             fontWeight = FontWeight.Bold
                         )
 
-                        VehicleInfoRow("Location", carListItem.address)
-                        VehicleInfoRow("Exterior Color", carListItem.exteriorColor)
-                        VehicleInfoRow("Interior Color", carListItem.interiorColor)
-                        VehicleInfoRow("Drive Type", carListItem.drivetype)
-                        VehicleInfoRow("Transmission", carListItem.transmission)
-                        VehicleInfoRow("Body Style", carListItem.bodytype)
-                        VehicleInfoRow("Engine", carListItem.engine)
-                        VehicleInfoRow("Fuel", carListItem.fuel)
+                        VehicleInfoRow("Location", carItem.address)
+                        VehicleInfoRow("Exterior Color", carItem.exteriorColor)
+                        VehicleInfoRow("Interior Color", carItem.interiorColor)
+                        VehicleInfoRow("Drive Type", carItem.drivetype)
+                        VehicleInfoRow("Transmission", carItem.transmission)
+                        VehicleInfoRow("Body Style", carItem.bodytype)
+                        VehicleInfoRow("Engine", carItem.engine)
+                        VehicleInfoRow("Fuel", carItem.fuel)
                     }
                     Divider(
                         Modifier
@@ -201,7 +201,7 @@ class CarDetailUi {
         val carListViewModel: CarListViewModel = hiltViewModel()
         Column {
             TopAppBarComponent()
-            val apiResult: ApiResult<CarListItem> by carListViewModel.carItemApiResultFlow.collectAsStateWithLifecycle()
+            val apiResult: ApiResult<CarItem> by carListViewModel.carItemApiResultFlow.collectAsStateWithLifecycle()
             when (apiResult) {
                 is ApiResult.Loading -> {
                     CommonComposeUi.SimpleCircularProgressIndicator()
@@ -222,7 +222,7 @@ class CarDetailUi {
     @Preview
     @Composable
     fun PreviewCarDetail() {
-        val carListItem = CarListItem(
+        val carItem = CarItem(
             "19UDE2F3XGA025865",
             "Automatic",
             22,
@@ -241,7 +241,7 @@ class CarDetailUi {
             "Unspecified",
             "Petrol"
         )
-        CarDetail(carListItem = carListItem)
+        CarDetail(carItem = carItem)
     }
 
 }

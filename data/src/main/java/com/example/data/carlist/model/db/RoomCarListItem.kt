@@ -1,4 +1,4 @@
-package com.example.data.model.db
+package com.example.data.carlist.model.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

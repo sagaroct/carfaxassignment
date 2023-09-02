@@ -1,59 +1,56 @@
 package com.example.carfaxassignmenmt.ui.carlist
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.model.ApiResult
-import com.example.domain.models.CarListItem
+import com.example.domain.models.ApiResult
+import com.example.domain.models.CarItem
 import com.example.domain.usecases.GetCarItemUseCase
-import com.example.domain.usecases.GetCarListItemUseCase
+import com.example.domain.usecases.GetCarListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CarListViewModel @Inject constructor(private val getCarItemUseCase: GetCarItemUseCase,
-                                           private val getCarListItemUseCase: GetCarListItemUseCase) : ViewModel()  {
+class CarListViewModel @Inject constructor(
+    private val getCarListUseCase: GetCarListUseCase,
+    private val getCarItemUseCase: GetCarItemUseCase,
+    private val dispatcher: CoroutineDispatcher
+) : ViewModel() {
 
     companion object {
         private const val TAG = "CarListViewModel"
     }
 
-    private val carListMutableApiResultFlow: MutableStateFlow<ApiResult<List<CarListItem>>> = MutableStateFlow(ApiResult.Loading)
-    val carListApiResultFlow: StateFlow<ApiResult<List<CarListItem>>>
+    private val carListMutableApiResultFlow: MutableStateFlow<ApiResult<List<CarItem>>> =
+        MutableStateFlow(
+            ApiResult.Loading
+        )
+    val carListApiResultFlow: StateFlow<ApiResult<List<CarItem>>>
         get() = carListMutableApiResultFlow
 
-    private val carItemMutableApiResultFlow: MutableStateFlow<ApiResult<CarListItem>> = MutableStateFlow(ApiResult.Loading)
-    val carItemApiResultFlow: StateFlow<ApiResult<CarListItem>>
+    private val carItemMutableApiResultFlow: MutableStateFlow<ApiResult<CarItem>> =
+        MutableStateFlow(
+            ApiResult.Loading
+        )
+    val carItemApiResultFlow: StateFlow<ApiResult<CarItem>>
         get() = carItemMutableApiResultFlow
 
-     fun getCarListFromRepository() {
-        viewModelScope.launch(Dispatchers.IO) {
-            getCarListItemUseCase().retryWhen { _, attempt -> attempt < 3 }
-                .catch { error ->
-                    Log.e(TAG, "getCarListFromRepository: ${error.message}")
-                    carListMutableApiResultFlow.value = ApiResult.Error
-                    emit(listOf())
-                }.collect {
-                    carListMutableApiResultFlow.value = ApiResult.Success(it)
-                }
+    fun getCarListFromRepository() {
+        viewModelScope.launch(dispatcher) {
+            getCarListUseCase().collect {
+                carListMutableApiResultFlow.value = it
+            }
         }
     }
 
     fun getCarItemFromRepository(id: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            getCarItemUseCase(id).retryWhen { _, attempt -> attempt < 3 }
-                .catch { error ->
-                    Log.e(TAG, "getCarListFromRepository: ${error.message}")
-                    carItemMutableApiResultFlow.value = ApiResult.Error
-                }.collect {
-                    carItemMutableApiResultFlow.value = ApiResult.Success(it)
-                }
+        viewModelScope.launch(dispatcher) {
+            getCarItemUseCase(id).collect {
+                carItemMutableApiResultFlow.value = it
+            }
         }
     }
 

@@ -1,10 +1,10 @@
-package com.example.data.model.local
+package com.example.data.carlist.model.mapper
 
 import com.example.data.mappers.BasicMapper
 import com.example.data.mappers.Mapper
-import com.example.data.model.db.RoomCarListItem
-import com.example.data.model.remote.RemoteCarListItem
-import com.example.domain.models.CarListItem
+import com.example.data.carlist.model.db.RoomCarListItem
+import com.example.data.carlist.model.remote.RemoteCarListItem
+import com.example.domain.models.CarItem
 
 /**
  * @author Sagar Pujari
@@ -14,13 +14,13 @@ import com.example.domain.models.CarListItem
 object CarListItemMapper {
 
     //    val networkMapper: Mapper<ListingsItem, CarListItem> = NetworkMapper()
-    val localMapper: Mapper<RoomCarListItem, CarListItem> = LocalMapper()
+    val localMapper: Mapper<RoomCarListItem, CarItem> = LocalMapper()
     val dbMapper: Mapper<RemoteCarListItem, RoomCarListItem> = DbMapper()
 
-    internal class LocalMapper : BasicMapper<RoomCarListItem, CarListItem>() {
-        override fun map(item: RoomCarListItem): CarListItem {
+    internal class LocalMapper : BasicMapper<RoomCarListItem, CarItem>() {
+        override fun map(item: RoomCarListItem): CarItem {
             return with(item) {
-                CarListItem(
+                CarItem(
                     vin, transmission, mileage, image, interiorColor, drivetype,
                     engine, bodytype, exteriorColor, currentPrice, phone,
                     address, year, make, model, trim, fuel)
