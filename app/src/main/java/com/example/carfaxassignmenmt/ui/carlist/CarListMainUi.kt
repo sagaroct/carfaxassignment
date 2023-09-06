@@ -26,10 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.carfaxassignmenmt.R
-import com.example.carfaxassignmenmt.common.Constants
 import com.example.carfaxassignmenmt.common.UnitConverter.priceWithComma
 import com.example.carfaxassignmenmt.common.UnitConverter.numberWithK
 import com.example.carfaxassignmenmt.ui.common.CommonComposeUi
@@ -149,14 +147,13 @@ class CarListMainUi {
     }
 
     @Composable
-    fun CarListView(navController: NavHostController, carItems: List<CarItem>){
+    fun CarListView(carItems: List<CarItem>, onNavigationToDetailScreen: (id: String) -> Unit){
         Column {
             Modifier.background(color = Color.LightGray)
             LazyColumn {
                 items(carItems) { carListItem ->
                     CarListRowCard(carListItem){
-                        navController.navigate("${Constants.Screen.CarDetailScreen.route}/${carListItem.vin}")
-
+                        onNavigationToDetailScreen.invoke(carListItem.vin)/*.navigate("${Screen.CarDetail.route}/${carListItem.vin}"*/
                     }
                 }
             }
@@ -165,7 +162,7 @@ class CarListMainUi {
 
     @Composable
     fun MainContent(
-        navController: NavHostController,
+        onNavigationToDetailScreen: (id: String) -> Unit,
         carListViewModel: CarListViewModel = hiltViewModel()
     ){
         Column {
@@ -183,7 +180,7 @@ class CarListMainUi {
                 }
                 is ApiResult.Success -> {
                     Log.d(TAG, (apiResult as ApiResult.Success).data.toString())
-                    CarListView(navController, (apiResult as ApiResult.Success).data)
+                    CarListView((apiResult as ApiResult.Success).data, onNavigationToDetailScreen)
                 }
             }
         }
