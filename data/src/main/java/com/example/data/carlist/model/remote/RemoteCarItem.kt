@@ -1,10 +1,8 @@
 package com.example.data.carlist.model.remote
 
-import com.example.data.carlist.model.remote.Dealer
-import com.example.data.carlist.model.remote.Images
 import com.google.gson.annotations.SerializedName
 
-data class RemoteCarListItem(
+data class RemoteCarItem(
 
 	@field:SerializedName("transmission")
 	val transmission: String,

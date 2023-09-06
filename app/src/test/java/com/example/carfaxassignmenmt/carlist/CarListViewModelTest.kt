@@ -7,9 +7,10 @@ import com.example.domain.usecases.GetCarListUseCase
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
-import kotlinx.coroutines.Dispatchers
+import io.mockk.verify
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -23,8 +24,6 @@ class CarListViewModelTest {
     @MockK
     lateinit var getCarItemUseCase: GetCarItemUseCase
 
-    private val dispatcher = Dispatchers.Unconfined
-
     @InjectMockKs
     private lateinit var carListViewModel: CarListViewModel
 
@@ -35,23 +34,23 @@ class CarListViewModelTest {
 
     @Test
     fun testGetCarListFromRepository_Positive() = runTest {
-        coEvery { getCarListUseCase() } returns flow {
+        every { getCarListUseCase() } returns flow {
             emit(ApiResult.Success(CarListMockData.cars))
         }
         carListViewModel.getCarListFromRepository()
         val apiResult = carListViewModel.carListApiResultFlow.value
-        coVerify(exactly = 1) { getCarListUseCase() }
+        verify(exactly = 1) { getCarListUseCase() }
         assert(apiResult is ApiResult.Success)
     }
 
     @Test
     fun testGetCarListFromRepository_Negative() = runTest {
-        coEvery { getCarListUseCase() } returns flow {
+        every { getCarListUseCase() } returns flow {
             emit(ApiResult.Error(NullPointerException("Empty car list")))
         }
         carListViewModel.getCarListFromRepository()
         val apiResult = carListViewModel.carListApiResultFlow.value
-        coVerify(exactly = 1) { getCarListUseCase() }
+        verify(exactly = 1) { getCarListUseCase() }
         assert(apiResult is ApiResult.Error)
         val apiErrorResult = apiResult as ApiResult.Error
         assert(apiErrorResult.error == apiResult.error)
@@ -60,12 +59,12 @@ class CarListViewModelTest {
     @Test
     fun testGetCarItemFromRepository_Positive() = runTest {
         val vin = CarListMockData.cars[0].vin
-        coEvery { getCarItemUseCase(vin) } returns flow {
+        every { getCarItemUseCase(vin) } returns flow {
             emit(ApiResult.Success(CarListMockData.cars[0]))
         }
         carListViewModel.getCarItemFromRepository(vin)
         val apiResult = carListViewModel.carItemApiResultFlow.value
-        coVerify(exactly = 1) { getCarItemUseCase(vin) }
+        verify(exactly = 1) { getCarItemUseCase(vin) }
         assert(apiResult is ApiResult.Success)
         val apiSuccessResult = apiResult as ApiResult.Success
         assert(apiSuccessResult.data.vin == vin)
