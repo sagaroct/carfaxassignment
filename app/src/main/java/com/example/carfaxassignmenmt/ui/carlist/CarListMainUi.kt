@@ -46,10 +46,13 @@ class CarListMainUi {
     }
 
     @Composable
-    fun TopAppBarComponent() {
+    fun TopAppBarComponent(onNavigationToDummyScreen: () -> Unit) {
         TopAppBar(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable {
+                    onNavigationToDummyScreen.invoke()
+                },
             title = { Text(stringResource(id = R.string.app_name)) }
         )
     }
@@ -163,10 +166,11 @@ class CarListMainUi {
     @Composable
     fun MainContent(
         onNavigationToDetailScreen: (id: String) -> Unit,
+        onNavigationToDummyScreen: () -> Unit,
         carListViewModel: CarListViewModel = hiltViewModel()
     ){
         Column {
-            TopAppBarComponent()
+            TopAppBarComponent(onNavigationToDummyScreen)
             val apiResult: ApiResult<List<CarItem>> by carListViewModel.carListApiResultFlow.collectAsStateWithLifecycle()
             when (apiResult) {
                 is ApiResult.Loading -> {
