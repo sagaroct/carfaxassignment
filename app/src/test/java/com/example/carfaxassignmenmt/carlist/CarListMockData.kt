@@ -6,7 +6,7 @@ object CarListMockData {
 
     val cars = listOf(
         CarItem(
-            vin = "11111111", transmission = "automatic", mileage = 120000,
+            vin = "111", transmission = "automatic", mileage = 120000,
             image = "https://media.carfax.com/img/vhr/oneprice/icon-up-med.png",
             interiorColor = "black",
             drivetype = "awd",
@@ -23,7 +23,7 @@ object CarListMockData {
             fuel = "gasoline"
         ),
         CarItem(
-            vin = "11111111", transmission = "automatic", mileage = 120000,
+            vin = "222", transmission = "automatic", mileage = 120000,
             image = "https://media.carfax.com/img/vhr/oneprice/icon-up-med.png",
             interiorColor = "black",
             drivetype = "awd",
