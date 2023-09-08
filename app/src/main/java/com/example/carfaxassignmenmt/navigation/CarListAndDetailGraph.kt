@@ -24,6 +24,8 @@ fun NavGraphBuilder.carListAndDetailGraph(
 		composable(Screen.CarList.route) {
 			CarListMainUi().MainContent(onNavigationToDetailScreen = { id ->
 				navController.navigate(Screen.CarDetail.withArgs(id))
+			}, onNavigationToDummyScreen = {
+				navController.navigate(Screen.DummyScreenA.route)
 			})
 		}
 		composable(
