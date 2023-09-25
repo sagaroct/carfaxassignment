@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.retryWhen
 
 /**
- * An Use case for getting car item, where carListRepository is constructor injected.
+ * An Use case for getting car list, where carListRepository is constructor injected.
  */
 class GetCarListUseCase(private val carListRepository: ICarListRepository) {
 
@@ -17,3 +17,11 @@ class GetCarListUseCase(private val carListRepository: ICarListRepository) {
     }
 
 }
+
+/**
+ *  This approach is only for "useless" use cases for which unit test is not required for eg like getDataFromRepository,
+ * not for when use cases are actually doing something more than just calling the repository.
+ * In simple language, we are just returning the lambda function here which is implemented by repository
+ * and there is no other business logic than that.
+ */
+//fun interface GetCarListUseCase :  () -> Flow<ApiResult<List<CarItem>>>

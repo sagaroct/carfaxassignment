@@ -7,6 +7,9 @@ import com.example.domain.repositories.ICarListRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+/**
+ * Test double for CarListRepository.
+ */
 class FakeCarListRepository : ICarListRepository {
 
 	override fun getCarList(): Flow<ApiResult<List<CarItem>>> {

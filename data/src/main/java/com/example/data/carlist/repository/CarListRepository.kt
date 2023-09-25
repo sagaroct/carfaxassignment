@@ -30,7 +30,7 @@ class CarListRepository @Inject constructor(
 
     override fun getCarList(): Flow<ApiResult<List<CarItem>>> {
         return flow{emit(carListingApiService.getCarListings())}
-            .map{ ApiResult.Success(saveCarListings(it)) }
+            .map{ ApiResult.Success(saveCarListings(it)) } //This is the right place to of map the data to Domain Data form.
             .catch { exception -> ApiResult.Error(exception) }
             .flowOn(dispatcher)
     }
