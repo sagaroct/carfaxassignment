@@ -38,10 +38,10 @@ import com.example.domain.models.CarItem
 /**
  * Created by Sagar Pujari on 02/10/22.
  */
-class CarDetailUi {
+class CarDetailScreen {
 
     companion object {
-        private const val TAG = "CarDetailUi"
+        private const val TAG = "CarDetailScreen"
     }
 
     private val callPhone = mutableStateOf(false)

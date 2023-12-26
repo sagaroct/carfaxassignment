@@ -1,10 +1,10 @@
 package com.example.data.carlist.di
 
+import com.example.data.carlist.model.db.CarListingLocalSource
+import com.example.data.carlist.model.mapper.CarListItemMapper
 import com.example.data.carlist.network.CarListingApiService
 import com.example.data.carlist.repository.CarListRepository
 import com.example.data.database.CarListingDatabase
-import com.example.data.carlist.model.db.CarListingLocalSource
-import com.example.data.carlist.model.mapper.CarListItemMapper
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

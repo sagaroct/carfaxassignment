@@ -3,7 +3,9 @@ package com.example.carfaxassignmenmt.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
-import com.example.carfaxassignmenmt.common.Screen
+import com.example.carfaxassignmenmt.ui.cardetail.carDetailScreenGraph
+import com.example.carfaxassignmenmt.ui.carlist.CarList
+import com.example.carfaxassignmenmt.ui.carlist.carListScreenGraph
 
 /**
  * Created by Sagar Pujari on 20/02/23.
@@ -12,9 +14,9 @@ import com.example.carfaxassignmenmt.common.Screen
 @Composable
 fun Navigation() {
 	val navController = rememberNavController()
-	NavHost(navController = navController, startDestination = Screen.CarList.graph) {
-		carListAndDetailGraph(navController)
-		dummyScreensGraph(navController)
+	NavHost(navController = navController, startDestination = CarList.route) {
+		carListScreenGraph(navController)
+		carDetailScreenGraph()
 	}
 }
 

@@ -39,10 +39,10 @@ import com.example.domain.models.CarItem
 /**
  * Created by Sagar Pujari on 02/10/22.
  */
-class CarListMainUi {
+class CarListScreen {
 
     companion object {
-        private const val TAG = "CarListMainUi"
+        private const val TAG = "CarListScreen"
     }
 
     @Composable
