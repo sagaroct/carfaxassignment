@@ -39,10 +39,10 @@ import com.example.domain.models.CarItem
 /**
  * Created by Sagar Pujari on 02/10/22.
  */
-class CarListMainUi {
+class CarListScreen {
 
     companion object {
-        private const val TAG = "CarListMainUi"
+        private const val TAG = "CarListScreen"
     }
 
     @Composable
@@ -167,7 +167,7 @@ class CarListMainUi {
     fun MainContent(
         onNavigationToDetailScreen: (id: String) -> Unit,
         onNavigationToDummyScreen: () -> Unit,
-        carListViewModel: CarListViewModel = hiltViewModel()
+        carListViewModel: CarListViewModel
     ){
         Column {
             TopAppBarComponent(onNavigationToDummyScreen)
@@ -188,8 +188,10 @@ class CarListMainUi {
                 }
             }
         }
-        carListViewModel.getCarListFromRepository()
-        Log.d(TAG, "Called getCarListFromRepository")
+        LaunchedEffect(true) {
+            carListViewModel.getCarListFromRepository()
+            Log.d(TAG, "Called getCarListFromRepository")
+        }
     }
 
     @Preview

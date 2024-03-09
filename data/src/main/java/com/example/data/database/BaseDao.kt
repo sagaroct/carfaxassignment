@@ -25,7 +25,7 @@ abstract class BaseDao<T> {
      * @return The SQLite row ids
      */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract suspend fun insert(items: List<T>?): List<Long>
+    abstract suspend fun insert(items: List<T>): List<Long>
 
     /**
      * Update an object from the database.
@@ -41,7 +41,7 @@ abstract class BaseDao<T> {
      * @param items the object to be updated
      */
     @Update
-    abstract suspend fun update(items: List<T>?)
+    abstract suspend fun update(items: List<T>)
 
     /**
      * Delete an object from the database

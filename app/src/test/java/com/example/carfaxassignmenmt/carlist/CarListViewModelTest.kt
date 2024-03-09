@@ -11,7 +11,10 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.verify
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -23,6 +26,9 @@ class CarListViewModelTest {
 
     @MockK
     lateinit var getCarItemUseCase: GetCarItemUseCase
+
+    @ExperimentalCoroutinesApi
+    private val testDispatcher = UnconfinedTestDispatcher()
 
     @InjectMockKs
     private lateinit var carListViewModel: CarListViewModel

@@ -1,6 +1,5 @@
 package com.example.data.di
 
-import com.example.data.BuildConfig
 import com.example.data.carlist.network.CarListingApiService
 import com.example.data.common.Constants
 import dagger.Module
@@ -21,11 +20,11 @@ object NetworksModule {
   @Provides
   fun provideRetrofit(): Retrofit {
     val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-    if (BuildConfig.DEBUG) {
+   /* if (BuildConfig.DEBUG) {
       val logging = HttpLoggingInterceptor()
       logging.setLevel(HttpLoggingInterceptor.Level.BODY)
       builder.addInterceptor(logging)
-    }
+    }*/
     val okHttpClient: OkHttpClient = builder.build()
     return Retrofit.Builder()
       .baseUrl(Constants.RestConstants.BASE_URL)
