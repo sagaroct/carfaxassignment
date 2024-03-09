@@ -6,6 +6,8 @@ package com.example.carfaxassignmenmt.navigation
 
 abstract class Screen(val route: String) {
 
+	val graph = route + "_graph"
+
 	fun withArgs(vararg args: String): String {
 		return buildString {
 			append(route)
