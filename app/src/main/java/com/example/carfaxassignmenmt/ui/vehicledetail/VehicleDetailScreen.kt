@@ -52,139 +52,10 @@ fun VehicleDetailScreen(vin: String, onBackClick:() -> Unit) {
 				Toast.makeText(LocalContext.current, "Error Fetching Data", Toast.LENGTH_LONG)
 					.show()
 			}
-
 		}
 	}
 	LaunchedEffect(Unit) {
 		vehicleDetailViewModel.getVehicle(vin)
-	}
-}
-
-@SuppressLint("UnrememberedMutableState")
-@Composable
-private fun VehicleDetailContent(vehicle: Vehicle) {
-	val callPhone = mutableStateOf(false)
-	if (callPhone.value) {
-		PhoneDialer().CallPhoneNumber(vehicle.phone) { dialogOpen ->
-			callPhone.value = dialogOpen
-		}
-	}
-	Surface(
-		// surfaceColor color will be changing gradually from primary to surface
-		color = Color.White,
-		// animateContentSize will change the Surface size gradually
-		modifier = Modifier
-			.animateContentSize()
-			.fillMaxHeight()
-//                    .verticalScroll(rememberScrollState())
-
-	) {
-		Column(
-			modifier = Modifier.verticalScroll(rememberScrollState()),
-			verticalArrangement = Arrangement.SpaceBetween
-		) {
-			Image(
-				painter = rememberAsyncImagePainter(
-					vehicle.image
-				),
-				"Car pic",
-				modifier = Modifier
-					.fillMaxWidth()
-					.height(250.dp),
-				contentScale = ContentScale.Crop
-			)
-			Column(Modifier.padding(start = 30.dp, top = 10.dp)) {
-				val carPrimaryDetail =
-					"${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}"
-				Text(
-					text = carPrimaryDetail,
-					Modifier.fillMaxWidth(),
-					fontSize = 16.sp,
-					color = Color.DarkGray,
-					fontWeight = FontWeight.Bold
-				)
-				Row(modifier = Modifier.padding(top = 8.dp)) {
-					Text(
-						text = "$ ${UnitConverter.priceWithComma(vehicle.currentPrice)}",
-						Modifier.wrapContentWidth(),
-						fontSize = 22.sp,
-						fontWeight = FontWeight.Bold
-					)
-
-					Divider(
-						Modifier
-							.padding(5.dp)
-							.width(3.dp)
-							.height(20.dp),
-						color = Color.Black
-					)
-
-					Text(
-						text = "${UnitConverter.numberWithK(vehicle.mileage)} mi",
-						Modifier.wrapContentWidth(),
-						fontSize = 22.sp,
-						fontWeight = FontWeight.Bold
-					)
-				}
-			}
-			Divider(
-				Modifier.padding(start = 10.dp, end = 10.dp, top = 20.dp),
-				color = Color.LightGray, thickness = 1.dp
-			)
-
-			Column(Modifier.padding(start = 30.dp, top = 10.dp).weight(3f, false)) {
-				Text(
-					text = "Vehicle Info",
-					Modifier
-						.wrapContentWidth()
-						.padding(bottom = 30.dp),
-					fontSize = 16.sp,
-					fontWeight = FontWeight.Bold
-				)
-
-				VehicleInfoRow("Location", vehicle.address)
-				VehicleInfoRow("Exterior Color", vehicle.exteriorColor)
-				VehicleInfoRow("Interior Color", vehicle.interiorColor)
-				VehicleInfoRow("Drive Type", vehicle.drivetype)
-				VehicleInfoRow("Transmission", vehicle.transmission)
-				VehicleInfoRow("Body Style", vehicle.bodytype)
-				VehicleInfoRow("Engine", vehicle.engine)
-				VehicleInfoRow("Fuel", vehicle.fuel)
-			}
-			Divider(
-				Modifier
-					.padding(start = 10.dp, end = 10.dp, top = 30.dp)
-					.background(
-						brush = Brush.verticalGradient(
-							colors = listOf(
-								Color.Gray,
-								Color.White
-							)
-						)
-					), thickness = 4.dp
-			)
-			Column(
-				Modifier
-					.padding(top = 300.dp)
-					.align(Alignment.CenterHorizontally)
-					.weight(1f, false)
-			) {
-				Button(
-					onClick = {
-						callPhone.value = true
-					},
-					modifier = Modifier
-						.fillMaxWidth()
-						.height(50.dp),
-					colors = ButtonDefaults.buttonColors(backgroundColor = Blue_Primary),
-					shape = RectangleShape,
-				)
-				{
-					Text(text = "CALL DEALER", color = Color.White)
-				}
-
-			}
-		}
 	}
 }
 
@@ -202,6 +73,145 @@ private fun VehicleInfoRow(label: String, value: String) {
 			Modifier.wrapContentWidth(),
 			fontSize = 16.sp
 		)
+	}
+}
+
+@Composable
+private fun VehicleDetailContent(vehicle: Vehicle) {
+  val callPhone = remember { mutableStateOf(false) }
+
+  if (callPhone.value) {
+    PhoneDialer().CallPhoneNumber(vehicle.phone) { dialogOpen ->
+      callPhone.value = dialogOpen
+    }
+  }
+
+  Surface(
+    color = Color.White,
+    modifier = Modifier
+      .animateContentSize()
+      .fillMaxHeight()
+  ) {
+    Column(
+      modifier = Modifier.verticalScroll(rememberScrollState()),
+      verticalArrangement = Arrangement.SpaceBetween
+    ) {
+      VehicleDetailImage(vehicle.image)
+      VehicleDetailHeader(vehicle)
+      DetailDivider()
+      VehicleInfoSection(vehicle)
+      GradientDivider()
+      CallDealerSection(onCallDealer = { callPhone.value = true })
+    }
+  }
+}
+
+@Composable
+private fun VehicleDetailImage(imageUrl: String) {
+  Image(
+    painter = rememberAsyncImagePainter(imageUrl),
+    contentDescription = "Car pic",
+    modifier = Modifier
+      .fillMaxWidth()
+      .height(250.dp),
+    contentScale = ContentScale.Crop
+  )
+}
+
+@Composable
+private fun VehicleDetailHeader(vehicle: Vehicle) {
+  Column(Modifier.padding(start = 30.dp, top = 10.dp)) {
+    Text(
+      text = "${vehicle.year} ${vehicle.make} ${vehicle.model} ${vehicle.trim}",
+      modifier = Modifier.fillMaxWidth(),
+      fontSize = 16.sp,
+      color = Color.DarkGray,
+      fontWeight = FontWeight.Bold
+    )
+    PriceAndMileageRow(vehicle.currentPrice, vehicle.mileage)
+  }
+}
+
+@Composable
+private fun PriceAndMileageRow(price: Int, mileage: Int) {
+  Row(modifier = Modifier.padding(top = 8.dp)) {
+    Text(
+      text = "$ ${UnitConverter.priceWithComma(price)}",
+      fontSize = 22.sp,
+      fontWeight = FontWeight.Bold
+    )
+    Divider(
+      Modifier
+        .padding(5.dp)
+        .width(3.dp)
+        .height(20.dp),
+      color = Color.Black
+    )
+    Text(
+      text = "${UnitConverter.numberWithK(mileage)} mi",
+      fontSize = 22.sp,
+      fontWeight = FontWeight.Bold
+    )
+  }
+}
+
+@Composable
+private fun DetailDivider() {
+  Divider(
+    Modifier.padding(start = 10.dp, end = 10.dp, top = 20.dp),
+    color = Color.LightGray,
+    thickness = 1.dp
+  )
+}
+
+@Composable
+private fun VehicleInfoSection(vehicle: Vehicle) {
+  Column(
+    Modifier
+      .padding(start = 30.dp, top = 10.dp)
+  ) {
+    Text(
+      text = "Vehicle Info",
+      modifier = Modifier.padding(bottom = 30.dp),
+      fontSize = 16.sp,
+      fontWeight = FontWeight.Bold
+    )
+    VehicleInfoRow("Location", vehicle.address)
+    VehicleInfoRow("Exterior Color", vehicle.exteriorColor)
+    VehicleInfoRow("Interior Color", vehicle.interiorColor)
+    VehicleInfoRow("Drive Type", vehicle.drivetype)
+    VehicleInfoRow("Transmission", vehicle.transmission)
+    VehicleInfoRow("Body Style", vehicle.bodytype)
+    VehicleInfoRow("Engine", vehicle.engine)
+    VehicleInfoRow("Fuel", vehicle.fuel)
+  }
+}
+
+@Composable
+private fun GradientDivider() {
+  Divider(
+    Modifier
+      .padding(start = 10.dp, end = 10.dp, top = 30.dp)
+      .background(
+        brush = Brush.verticalGradient(
+          colors = listOf(Color.Gray, Color.White)
+        )
+      ),
+    thickness = 4.dp
+  )
+}
+
+@Composable
+private fun CallDealerSection(onCallDealer: () -> Unit) {
+	Button(
+		onClick = onCallDealer,
+		modifier = Modifier
+			.fillMaxWidth()
+			.height(50.dp),
+		colors = ButtonDefaults.buttonColors(backgroundColor = Blue_Primary),
+		shape = RectangleShape
+	) {
+		Text(text = "CALL DEALER", color = Color.White)
 	}
 }
 
