@@ -14,7 +14,6 @@ fun Navigation() {
 	val navController = rememberNavController()
 	NavHost(navController = navController, startDestination = Screen.CarList.graph) {
 		carListAndDetailGraph(navController)
-		dummyScreensGraph(navController)
 	}
 }
 

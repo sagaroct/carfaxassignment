@@ -12,12 +12,6 @@ package com.example.carfaxassignmenmt.common
             const val carListItemId = "car_list_item_id"
         }
 
-    object DummyScreenA : Screen("dummy_screen_a"){
-        val graph = route + "_graph"
-    }
-
-    object DummyScreenB : Screen("dummy_screen_b")
-
         fun withArgs(vararg args: String): String {
             return buildString {
                 append(route)

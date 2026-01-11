@@ -1,21 +1,22 @@
 package com.example.carfaxassignmenmt.repository
 
-import com.example.carfaxassignmenmt.carlist.CarListMockData
+import com.example.carfaxassignmenmt.viewmodel.VehicleMockData
 import com.example.domain.models.ApiResult
-import com.example.domain.models.CarItem
-import com.example.domain.repositories.ICarListRepository
+import com.example.domain.models.Vehicle
+import com.example.domain.repositories.IVehicleRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FakeCarListRepository : ICarListRepository {
+class FakeCarListRepository(private val isSuccess: Boolean = true) : IVehicleRepository {
 
-	override fun getCarList(): Flow<ApiResult<List<CarItem>>> {
-		return flow { emit(ApiResult.Success(CarListMockData.cars)) }
+	override fun getVehicleList(): Flow<ApiResult<List<Vehicle>>> {
+		return flow { emit(if(isSuccess) ApiResult.Success(VehicleMockData.vehicles) else ApiResult.Error(
+			NullPointerException("Not Found"))) }
 	}
 
-	override fun getCarItem(id: String): Flow<ApiResult<CarItem>> {
+	override fun getVehicle(vin: String): Flow<ApiResult<Vehicle>> {
 		return flow {
-			CarListMockData.cars.find { it.vin == id }?.let { emit(ApiResult.Success(it)) }
+			VehicleMockData.vehicles.find { it.vin == vin }?.let { emit(ApiResult.Success(it)) }
 				?: emit(ApiResult.Error(NullPointerException("No vin found")))
 		}
 	}
