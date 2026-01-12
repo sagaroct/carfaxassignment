@@ -1,10 +1,10 @@
-package com.example.carfaxassignmenmt.ui.vehicledetail
+package com.example.carfaxassignmenmt.ui.vehiclelist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.models.ApiResult
 import com.example.domain.models.Vehicle
-import com.example.domain.usecases.GetVehicleUseCase
+import com.example.domain.usecases.GetVehicleListUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,32 +15,38 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class VehicleDetailViewModel @Inject constructor(
-	private val getVehicleUseCase: GetVehicleUseCase,
+class VehicleListViewModel @Inject constructor(
+	private val getVehicleListUseCase: GetVehicleListUseCase,
 	private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
 
-	private val _uiState = MutableStateFlow(VehicleDetailUiState(isLoading = true))
-	val uiState: StateFlow<VehicleDetailUiState> = _uiState.asStateFlow()
+	private val _uiState = MutableStateFlow(VehicleListUiState(isLoading = true))
+	val uiState: StateFlow<VehicleListUiState> = _uiState.asStateFlow()
 
-	fun getVehicle(id: String) {
+	init {
+		getVehicles()
+	}
+
+	private fun getVehicles() {
 		viewModelScope.launch(dispatcher) {
-			getVehicleUseCase(id).collect { apiResult ->
-				_uiState.update { currentState ->
-					when (apiResult) {
-						is ApiResult.Loading -> currentState.copy(isLoading = true)
-						is ApiResult.Success -> currentState.copy(
-							vehicle = apiResult.data,
-							isLoading = false,
-							error = null
-						)
-						is ApiResult.Error -> currentState.copy(
-							error = apiResult.error.message,
-							isLoading = false
-						)
+			getVehicleListUseCase()
+				.collect { apiResult ->
+					_uiState.update { currentState ->
+						when (apiResult) {
+							is ApiResult.Loading -> currentState.copy(isLoading = true)
+							is ApiResult.Success -> currentState.copy(
+								vehicles = apiResult.data,
+								isLoading = false,
+								error = null
+							)
+
+							is ApiResult.Error -> currentState.copy(
+								error = apiResult.error.message,
+								isLoading = false
+							)
+						}
 					}
 				}
-			}
 		}
 	}
 
@@ -54,8 +60,8 @@ class VehicleDetailViewModel @Inject constructor(
 
 }
 
-data class VehicleDetailUiState(
-	val vehicle: Vehicle? = null,
+data class VehicleListUiState(
+	val vehicles: List<Vehicle> = emptyList(),
 	val isLoading: Boolean = false,
 	val error: String? = null,
 	val shouldShowCallDialog: Boolean = false,

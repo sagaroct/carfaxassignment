@@ -46,11 +46,10 @@ class VehicleDetailViewModelTest {
 			emit(ApiResult.Success(VehicleMockData.vehicles[0]))
 		}
 		vehicleDetailViewModel.getVehicle(vin)
-		val apiResult = vehicleDetailViewModel.vehicleApiResultFlow.value
+		val uiState = vehicleDetailViewModel.uiState.value
 		verify(exactly = 1) { getVehicleUseCase(vin) }
-		assert(apiResult is ApiResult.Success)
-		val apiSuccessResult = apiResult as ApiResult.Success
-		assert(apiSuccessResult.data.vin == vin)
+		assert(uiState.vehicle?.vin == vin)
+		assert(uiState.error == null)
 	}
 
 	@Test
@@ -60,11 +59,32 @@ class VehicleDetailViewModelTest {
 			emit(ApiResult.Error(NullPointerException("Not found")))
 		}
 		vehicleDetailViewModel.getVehicle(vin)
-		val apiResult = vehicleDetailViewModel.vehicleApiResultFlow.value
+		val uiState = vehicleDetailViewModel.uiState.value
 		coVerify(exactly = 1) { getVehicleUseCase(vin) }
-		assert(apiResult is ApiResult.Error)
-		val apiErrorResult = apiResult as ApiResult.Error
-		assert(apiErrorResult.error == apiResult.error)
+		assert(uiState.vehicle == null)
+		assert(uiState.error == "Not found")
+	}
+
+	// src/test/java/com/example/carfaxassignmenmt/viewmodel/VehicleDetailViewModelTest.kt
+
+	@Test
+	fun testOnCallDealerClicked_updatesUiState() = runTest {
+	    val phoneNumber = "123-456-7890"
+	    vehicleDetailViewModel.onCallDealerClicked(phoneNumber)
+	    val uiState = vehicleDetailViewModel.uiState.value
+	    assert(uiState.shouldShowCallDialog)
+	    assert(uiState.selectedPhoneNumber == phoneNumber)
+	}
+
+	@Test
+	fun testOnCallDialogDismissed_resetsUiState() = runTest {
+	    // First, show the dialog
+	    vehicleDetailViewModel.onCallDealerClicked("123-456-7890")
+	    // Then, dismiss it
+	    vehicleDetailViewModel.onCallDialogDismissed()
+	    val uiState = vehicleDetailViewModel.uiState.value
+	    assert(!uiState.shouldShowCallDialog)
+	    assert(uiState.selectedPhoneNumber == "")
 	}
 
 }

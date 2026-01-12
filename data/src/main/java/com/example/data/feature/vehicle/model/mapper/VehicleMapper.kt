@@ -12,21 +12,21 @@ import com.example.domain.models.Vehicle
  */
 object VehicleMapper {
 
-	internal object RemoteToDbMapper : BasicMapper<RemoteVehicle, VehicleEntity>() {
+	 object RemoteToDbMapper : BasicMapper<RemoteVehicle, VehicleEntity>() {
 		override fun map(item: RemoteVehicle): VehicleEntity =
 			VehicleEntity(
 				vin = item.vin,
 				transmission = item.transmission,
 				mileage = item.mileage,
-				image = item.images.large.first(),
+				image = item.images.large.firstOrNull().orEmpty(),
 				interiorColor = item.interiorColor,
 				drivetype = item.drivetype,
 				engine = item.engine,
 				bodytype = item.bodytype,
 				exteriorColor = item.exteriorColor,
 				currentPrice = item.currentPrice,
-				phone = item.dealer.phone.orEmpty(),
-				address = item.dealer.address.orEmpty(),
+				phone = item.dealer.phone,
+				address = item.dealer.address,
 				year = item.year,
 				make = item.make,
 				model = item.model,
@@ -35,7 +35,7 @@ object VehicleMapper {
 			)
 	}
 
-	internal object DbToUiMapper : BasicMapper<VehicleEntity, Vehicle>() {
+	object DbToUiMapper : BasicMapper<VehicleEntity, Vehicle>() {
 		override fun map(item: VehicleEntity): Vehicle {
 			return with(item) {
 				Vehicle(

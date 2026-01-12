@@ -1,4 +1,4 @@
-package com.example.carfaxassignmenmt.ui.carlist
+package com.example.carfaxassignmenmt.ui.vehiclelist
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
@@ -21,8 +21,6 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -43,7 +41,6 @@ import com.example.carfaxassignmenmt.ui.common.SimpleCircularProgressIndicator
 import com.example.carfaxassignmenmt.ui.common.TopAppBarComponent
 import com.example.carfaxassignmenmt.ui.phonedialer.PhoneDialer
 import com.example.carfaxassignmenmt.ui.theme.Blue_Primary
-import com.example.domain.models.ApiResult
 import com.example.domain.models.Vehicle
 
 @Composable
@@ -53,21 +50,20 @@ fun VehicleListScreen(
 ) {
 	Column {
 		TopAppBarComponent(title = stringResource(R.string.vehicles), showBackButton = false)
-		val apiResult: ApiResult<List<Vehicle>> by vehicleListViewModel.carListApiResultFlow.collectAsStateWithLifecycle()
-		when (apiResult) {
-			is ApiResult.Loading -> {
+		val uiState by vehicleListViewModel.uiState.collectAsStateWithLifecycle()
+		when {
+			uiState.isLoading -> {
 				SimpleCircularProgressIndicator()
 			}
-
-			is ApiResult.Error -> {
-				val errorMsg = (apiResult as ApiResult.Error).error.message ?: "Error Fetching Data"
-				Toast.makeText(LocalContext.current, errorMsg, Toast.LENGTH_LONG).show()
+			uiState.error != null -> {
+				Toast.makeText(LocalContext.current, uiState.error, Toast.LENGTH_LONG).show()
 			}
-
-			is ApiResult.Success -> {
+			else -> {
 				VehicleListContent(
-					(apiResult as ApiResult.Success).data,
-					onNavigationToDetailScreen
+					uiState = uiState,
+					onCallDealer = vehicleListViewModel::onCallDealerClicked,
+					onCallDialogDismissed = vehicleListViewModel::onCallDialogDismissed,
+					onNavigationToDetailScreen = onNavigationToDetailScreen
 				)
 			}
 		}
@@ -75,15 +71,23 @@ fun VehicleListScreen(
 }
 
 @Composable
-private fun VehicleListContent(
-	vehicles: List<Vehicle>,
+ fun VehicleListContent(
+	uiState: VehicleListUiState,
+	onCallDealer: (String) -> Unit,
+	onCallDialogDismissed: () -> Unit,
 	onNavigationToDetailScreen: (id: String) -> Unit
 ) {
+	 val vehicles = uiState.vehicles
+	if (uiState.shouldShowCallDialog) {
+		PhoneDialer().CallPhoneNumber(uiState.selectedPhoneNumber) { dialogOpen ->
+			if (!dialogOpen) onCallDialogDismissed()
+		}
+	}
 	Column {
 		Modifier.background(color = Color.LightGray)
 		LazyColumn {
 			items(vehicles) { carListItem ->
-				VehicleListItem(carListItem) {
+				VehicleListItem(carListItem, onCallDealer) {
 					onNavigationToDetailScreen.invoke(carListItem.vin)
 				}
 			}
@@ -95,16 +99,9 @@ private fun VehicleListContent(
 @Composable
 private fun VehicleListItem(
 	vehicle: Vehicle,
+	onCallDealer: (String) -> Unit,
 	onClick: () -> Unit
 ) {
-	val callPhone = remember { mutableStateOf(false) }
-
-	if (callPhone.value) {
-		PhoneDialer().CallPhoneNumber(vehicle.phone) { dialogOpen ->
-			callPhone.value = dialogOpen
-		}
-	}
-
 	Card(
 		shape = RoundedCornerShape(10.dp),
 		elevation = 1.dp,
@@ -115,7 +112,7 @@ private fun VehicleListItem(
 	) {
 		Column {
 			VehicleImage(vehicle.image)
-			VehicleDetails(vehicle, onCallDealer = { callPhone.value = true })
+			VehicleDetails(vehicle, onCallDealer = { onCallDealer(vehicle.phone) })
 		}
 	}
 }
@@ -229,10 +226,14 @@ fun PreviewVehicleList() {
 		fuel = "Gasoline"
 	)
 	val carListItems = arrayListOf(vehicle, vehicle, vehicle)
-	LazyColumn {
-		items(carListItems) { carListItem ->
-			VehicleListItem(carListItem) {
-			}
-		}
-	}
+	VehicleListContent(
+		uiState = VehicleListUiState(
+			vehicles = carListItems,
+			isLoading = false,
+			error = null
+		),
+		onCallDealer = {},
+		onCallDialogDismissed = {},
+		onNavigationToDetailScreen = {}
+	)
 }

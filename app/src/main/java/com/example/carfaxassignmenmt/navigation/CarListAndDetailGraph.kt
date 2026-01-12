@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.example.carfaxassignmenmt.common.Screen
 import com.example.carfaxassignmenmt.ui.vehicledetail.VehicleDetailScreen
-import com.example.carfaxassignmenmt.ui.carlist.VehicleListScreen
+import com.example.carfaxassignmenmt.ui.vehiclelist.VehicleListScreen
 
 /**
  * Navgraph ceated for car the screen(ui module) of carlist and detail.

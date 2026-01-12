@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -23,28 +24,27 @@ class VehicleRepository @Inject constructor(
 	private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IVehicleRepository {
 
-	override fun getVehicleList(): Flow<ApiResult<List<Vehicle>>> =
-		flow {
-			// 1) Check current DB state
-			val cached = vehicleDao.get().first()
-			val hasCache = cached.isNotEmpty()
+	override fun getVehicleList() = flow<ApiResult<List<Vehicle>>> {
+		// 1) Check current DB state
+		val cached = vehicleDao.get().first()
+		val hasCache = cached.isNotEmpty()
 
-			if (hasCache) {
-				emit(ApiResult.Success(VehicleMapper.DbToUiMapper.map(cached)))
-			}
-
-			// 2) Always refresh from network; DB updates will drive subsequent UI updates
-			val remote = vehicleApiService.getVehicles()
-			saveCarListings(remote.listings)
-
-			// 3) If there was no cache, wait for DB to be populated then emit it
-			if (!hasCache) {
-				val populated = vehicleDao.get().first { it.isNotEmpty() }
-				emit(ApiResult.Success(VehicleMapper.DbToUiMapper.map(populated)))
-			}
+		if (hasCache) {
+			emit(ApiResult.Success(VehicleMapper.DbToUiMapper.map(cached)))
 		}
-			.catch { exception -> ApiResult.Error(exception) }
-			.flowOn(dispatcher)
+
+		// 2) Always refresh from network; DB updates will drive subsequent UI updates
+		val remote = vehicleApiService.getVehicles()
+		saveCarListings(remote.listings)
+
+		// 3) If there was no cache, wait for DB to be populated then emit it
+		if (!hasCache) {
+			val populated = vehicleDao.get().first()
+			emit(ApiResult.Success(VehicleMapper.DbToUiMapper.map(populated)))
+		}
+	}
+		.catch { exception -> emit(ApiResult.Error(exception)) }
+		.flowOn(dispatcher)
 
 	override fun getVehicle(vin: String): Flow<ApiResult<Vehicle>> {
 		return vehicleDao.get(vin)
@@ -59,7 +59,8 @@ class VehicleRepository @Inject constructor(
 	}
 
 	private suspend fun getLocalCarList(): List<Vehicle> {
-		return VehicleMapper.DbToUiMapper.map(vehicleDao.get().first())
+		val dbList = vehicleDao.get().firstOrNull() ?: emptyList()
+		return VehicleMapper.DbToUiMapper.map(dbList)
 	}
 
 }
