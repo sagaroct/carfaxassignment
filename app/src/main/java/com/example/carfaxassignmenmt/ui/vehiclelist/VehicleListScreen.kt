@@ -1,6 +1,5 @@
 package com.example.carfaxassignmenmt.ui.vehiclelist
 
-import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,11 +19,11 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -46,33 +45,44 @@ import com.example.domain.models.Vehicle
 @Composable
 fun VehicleListScreen(
 	onNavigationToDetailScreen: (id: String) -> Unit,
+	onShowSnackBar: suspend (message: String) -> Unit = {},
 	vehicleListViewModel: VehicleListViewModel = hiltViewModel()
 ) {
 	Column {
 		TopAppBarComponent(title = stringResource(R.string.vehicles), showBackButton = false)
 		val uiState by vehicleListViewModel.uiState.collectAsStateWithLifecycle()
-		when {
-			uiState.isLoading -> {
+		when(uiState) {
+			VehicleListUiState.Loading -> {
 				SimpleCircularProgressIndicator()
 			}
-			uiState.error != null -> {
-				Toast.makeText(LocalContext.current, uiState.error, Toast.LENGTH_LONG).show()
+			is VehicleListUiState.Error -> {
+				VehicleListErrorScreen(message = (uiState as VehicleListUiState.Error).message)
 			}
-			else -> {
+			is VehicleListUiState.Shown -> {
 				VehicleListContent(
-					uiState = uiState,
-					onCallDealer = vehicleListViewModel::onCallDealerClicked,
-					onCallDialogDismissed = vehicleListViewModel::onCallDialogDismissed,
+					uiState = uiState as VehicleListUiState.Shown,
+					onCallDealer = {vehicleListViewModel.sendUiEvent(VehicleListUiEvent.CallDealerCTA(phoneNumber = it))},
+					onCallDialogDismissed = { vehicleListViewModel.sendUiEvent(VehicleListUiEvent.CallDialogDismissed) },
 					onNavigationToDetailScreen = onNavigationToDetailScreen
 				)
 			}
 		}
 	}
+	LaunchedEffect(Unit){
+		vehicleListViewModel.sideEffect.collect { sideEffect ->
+			when(sideEffect) {
+				is VehicleListSideEffect.ShowErrorMessage -> {
+					onShowSnackBar(sideEffect.message)
+				}
+			}
+		}
+
+	}
 }
 
 @Composable
  fun VehicleListContent(
-	uiState: VehicleListUiState,
+	uiState: VehicleListUiState.Shown,
 	onCallDealer: (String) -> Unit,
 	onCallDialogDismissed: () -> Unit,
 	onNavigationToDetailScreen: (id: String) -> Unit
@@ -202,6 +212,23 @@ private fun CallDealerButton(onClick: () -> Unit) {
 	}
 }
 
+@Composable
+private fun VehicleListErrorScreen(message: String) {
+	Column(
+		modifier = Modifier
+			.fillMaxSize(),
+		horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+		verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+	) {
+		Text(
+			text = message,
+			fontSize = 18.sp,
+			color = Color.Red,
+			textAlign = TextAlign.Center
+		)
+	}
+}
+
 
 @Preview
 @Composable
@@ -227,13 +254,19 @@ fun PreviewVehicleList() {
 	)
 	val carListItems = arrayListOf(vehicle, vehicle, vehicle)
 	VehicleListContent(
-		uiState = VehicleListUiState(
+		uiState = VehicleListUiState.Shown(
 			vehicles = carListItems,
-			isLoading = false,
-			error = null
+			shouldShowCallDialog = false,
+			selectedPhoneNumber = ""
 		),
 		onCallDealer = {},
 		onCallDialogDismissed = {},
 		onNavigationToDetailScreen = {}
 	)
+}
+
+@Preview
+@Composable
+private fun PreviewErrorScreen() {
+	VehicleListErrorScreen(message = "Unable to load vehicles. Please try again later.")
 }

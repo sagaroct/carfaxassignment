@@ -1,5 +1,6 @@
 package com.example.carfaxassignmenmt.navigation
 
+import androidx.compose.material.SnackbarHostState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -14,8 +15,9 @@ import com.example.carfaxassignmenmt.ui.vehiclelist.VehicleListScreen
  * Navgraph ceated for car the screen(ui module) of carlist and detail.
  * In similar manner for different ui modules we can create a separate file for its nav graph.
  */
-fun NavGraphBuilder.carListAndDetailGraph(
-	navController: NavController
+fun NavGraphBuilder.vehicleListAndDetailGraph(
+	navController: NavController,
+	snackbarHostState: SnackbarHostState
 ) {
 	navigation(
 		startDestination = Screen.CarList.route, //This route is from where our very first screen route name is mentioned.
@@ -24,7 +26,10 @@ fun NavGraphBuilder.carListAndDetailGraph(
 		composable(Screen.CarList.route) {
 			VehicleListScreen(onNavigationToDetailScreen = { id ->
 				navController.navigate(Screen.CarDetail.withArgs(id))
-			})
+			}, onShowSnackBar = {
+				snackbarHostState.showSnackbar(message = it)
+			}
+				)
 		}
 		composable(
 			route = Screen.CarDetail.withArgsFormat(Screen.CarDetail.carListItemId),

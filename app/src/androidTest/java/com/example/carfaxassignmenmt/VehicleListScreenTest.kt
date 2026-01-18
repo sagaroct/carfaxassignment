@@ -42,10 +42,8 @@ class VehicleListScreenTest {
         composeTestRule.setContent {
 	        MaterialTheme {
 		        VehicleListContent(
-			        uiState = VehicleListUiState(
+			        uiState = VehicleListUiState.Shown(
 				        vehicles = listOf(sampleVehicle),
-				        isLoading = false,
-				        error = null
 			        ),
 			        onCallDealer = {},
 			        onCallDialogDismissed = {},
@@ -68,7 +66,7 @@ class VehicleListScreenTest {
 		composeTestRule.setContent {
 			MaterialTheme {
 				VehicleListContent(
-					uiState = VehicleListUiState(vehicles = listOf(sampleVehicle)),
+					uiState = VehicleListUiState.Shown(vehicles = listOf(sampleVehicle)),
 					onCallDealer = {},
 					onCallDialogDismissed = {},
 					onNavigationToDetailScreen = { vin -> navigatedVin = vin }
@@ -86,7 +84,7 @@ class VehicleListScreenTest {
 		composeTestRule.setContent {
 			MaterialTheme {
 				VehicleListContent(
-					uiState = VehicleListUiState(vehicles = listOf(sampleVehicle)),
+					uiState = VehicleListUiState.Shown(vehicles = listOf(sampleVehicle)),
 					onCallDealer = { phone -> calledPhoneNumber = phone },
 					onCallDialogDismissed = {},
 					onNavigationToDetailScreen = {}
